@@ -22,6 +22,8 @@ namespace AddressBook_ADODotNet
             addressBookModel.AddressBookType = "Friends";
             addressBookRepo.checkConnection();
             addressBookRepo.AddContactInAddressBook(addressBookModel);
+
+            addressBookRepo.EditContactUsingName(addressBookModel, "Sanju");
         }
     }
 }
