@@ -8,6 +8,8 @@ namespace AddressBook_ADODotNet
         {
             Console.WriteLine("================= Welcome To Address Book Using ADO Dot Net =======================");
 
+            AddressBookRepo addressBookRepo = new AddressBookRepo();
+            addressBookRepo.checkConnection();
         }
     }
 }
