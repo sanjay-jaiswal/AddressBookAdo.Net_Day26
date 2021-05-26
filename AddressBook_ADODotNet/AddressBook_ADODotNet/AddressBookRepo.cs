@@ -6,37 +6,104 @@ using System.Data.SqlClient;
 
 namespace AddressBook_ADODotNet
 {
-    class AddressBookRepo
+    public class AddressBookRepo
     {
-        public static string connectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=AddressBookADODotNet;Integrated Security=True";
-        SqlConnection connection = new SqlConnection(connectionString);
-        public void checkConnection()
+        public static string connectionString = @"Data Source=desktop-049svlj;Initial Catalog=AddressBookADO;Integrated Security=True";
+        //Data Source = desktop - 049svlj;Initial Catalog = AddressBookADODotNet; Integrated Security = True
+        //SqlConnection connection;
+        List<AddressBookModel> contacList = new List<AddressBookModel>();
+
+        public void EtablishConnection()
         {
+            SqlConnection sqConnection = new SqlConnection(connectionString);
             try
             {
-                this.connection.Open();
-                Console.WriteLine("Connection Established!!");
-                this.connection.Close();
+                using (sqConnection)
+                {
+                    sqConnection.Open();
+                    Console.WriteLine("Connection is established!!");
+                }
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.StackTrace);
+                Console.WriteLine(e);
+            }
+            finally
+            {
+                sqConnection.Close();
             }
         }
 
+        public bool RetrieveFromDatabase()
+        {
+            SqlConnection connection = new SqlConnection(connectionString);
+            try
+            {
+                using (connection)
+                {
+                    //Fetched data table using stored procedure.
+                    SqlCommand command = new SqlCommand("spRetriveAllRecords",connection);
+
+                    connection.Open();
+
+                    ///Using sql data reader for fetch the records.
+                    SqlDataReader reader = command.ExecuteReader();
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            AddressBookModel c = new AddressBookModel();
+                            c.FirstName = reader.GetString(1);
+                            c.LastName = reader.GetString(2);
+                            c.Address = reader.GetString(3);
+                            c.City = reader.GetString(4);
+                            c.State = reader.GetString(5);
+
+                            c.Zip = reader.GetString(6);
+                            c.PhoneNumber = reader.GetString(7);
+                            c.Email = reader.GetString(8);
+                            c.AddressBookName = reader.GetString(9);
+                            c.AddressBookType = reader.GetString(10);
+
+                            contacList.Add(c);
+
+                            Console.WriteLine(c.FirstName + "  " + c.LastName + "  " + c.Address + "  " + c.City + "  " +
+                                c.State + "  " + c.Zip + "  " + c.PhoneNumber + "  " + c.Email + "  " + c.AddressBookName+ "  "+ c.AddressBookType);
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("No Data in table!!");
+                    }
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            finally
+            {
+                connection.Close();
+            }
+            return false;
+        }
+
         /// <summary>
-        /// 
+        /// Adding records into database. 
         /// </summary>
         /// <param name="addressBookModel"></param>
         /// <returns></returns>
-        public bool AddContactInAddressBook(AddressBookModel addressBookModel)
+        public bool AddContactsInAddressBook(AddressBookModel addressBookModel)
         {
+            SqlConnection connection = new SqlConnection(connectionString);
             try
             {
-                using (this.connection)
+                using (connection)
                 {
-                    SqlCommand cmd = new SqlCommand("SpAddAddressBookDetails", this.connection);
-                    cmd.CommandType = CommandType.StoredProcedure;
+                    SqlCommand cmd = new SqlCommand("StoredProcedure_AddressBook",connection);
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
                     cmd.Parameters.AddWithValue("@FirstName", addressBookModel.FirstName);
                     cmd.Parameters.AddWithValue("@LastName", addressBookModel.LastName);
                     cmd.Parameters.AddWithValue("@Address", addressBookModel.Address);
@@ -47,9 +114,9 @@ namespace AddressBook_ADODotNet
                     cmd.Parameters.AddWithValue("@Email", addressBookModel.Email);
                     cmd.Parameters.AddWithValue("@AddressBookName", addressBookModel.AddressBookName);
                     cmd.Parameters.AddWithValue("@AddressBookType", addressBookModel.AddressBookType);
-                    this.connection.Open();
+                    connection.Open();
                     var result = cmd.ExecuteNonQuery();
-                    this.connection.Close();
+                    connection.Close();
                     if (result != 0)
                     {
                         return true;
@@ -63,26 +130,21 @@ namespace AddressBook_ADODotNet
             }
             finally
             {
-                this.connection.Close();
+                connection.Close();
             }
         }
 
-        /// <summary>
-        /// Edit contact using name.
-        /// </summary>
-        /// <param name="addressBookModel"></param>
-        /// <param name="firstName"></param>
-        /// <returns></returns>
-        public bool EditContactUsingName(AddressBookModel addressBookModel, string firstName)
+        public bool UpdateExiContactToDataBase(AddressBookModel addressBookModel, string firstName)
         {
+            SqlConnection connection = new SqlConnection(connectionString);
             try
             {
-                using (this.connection)
+                using (connection)
                 {
-                    string query = @"update Address_Book set last_name=@LastName,address=@Address,city=@City,
-                    state=@State,zip=@Zip,phone_number=@PhoneNumber,email=@Email,address_book_name=@AddressBookName,
-                    address_book_type=@AddressBookType  where first_name=@firstName";
-                    SqlCommand cmd = new SqlCommand(query, this.connection);
+                    string query = @"update AddressBookDetails set LastName=@LastName,Address=@Address,City=@City,
+                    State=@State,Zip=@Zip,PhoneNumber=@PhoneNumber,Email=@Email,AddressBookName=@AddressBookName,
+                    AddressBookType=@AddressBookType  where FirstName=@FirstName";
+                    SqlCommand cmd = new SqlCommand(query,connection);
                     cmd.Parameters.AddWithValue("@FirstName", firstName);
                     cmd.Parameters.AddWithValue("@LastName", addressBookModel.LastName);
                     cmd.Parameters.AddWithValue("@Address", addressBookModel.Address);
@@ -93,9 +155,9 @@ namespace AddressBook_ADODotNet
                     cmd.Parameters.AddWithValue("@Email", addressBookModel.Email);
                     cmd.Parameters.AddWithValue("@AddressBookName", addressBookModel.AddressBookName);
                     cmd.Parameters.AddWithValue("@AddressBookType", addressBookModel.AddressBookType);
-                    this.connection.Open();
+                    connection.Open();
                     var result = cmd.ExecuteNonQuery();
-                    this.connection.Close();
+                    connection.Close();
                     if (result != 0)
                     {
                         return true;
@@ -109,7 +171,7 @@ namespace AddressBook_ADODotNet
             }
             finally
             {
-                this.connection.Close();
+                connection.Close();
             }
         }
     }
