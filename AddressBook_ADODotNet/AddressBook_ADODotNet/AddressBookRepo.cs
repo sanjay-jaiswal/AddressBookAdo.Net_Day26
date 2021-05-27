@@ -213,7 +213,7 @@ namespace AddressBook_ADODotNet
                 AddressBookModel addressBookModel = new AddressBookModel();
                 using (connection)
                 {
-                    string query = @"select * from Address_Book where city='amravati' Or state='andhra';";
+                    string query = @"select * from AddressBookDetails where city='Margao' Or state='Goa';";
                     SqlCommand cmd = new SqlCommand(query,connection);
                     connection.Open();
                     SqlDataReader sqlDataReader = cmd.ExecuteReader();
@@ -241,6 +241,52 @@ namespace AddressBook_ADODotNet
                     }
                     sqlDataReader.Close();
                     connection.Close();
+                }
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
+        public void CountByCityAndState()
+        {
+            SqlConnection connection = new SqlConnection(connectionString);
+            try
+            {
+                AddressBookModel addressBookModel = new AddressBookModel();
+                using (connection)
+                {
+                    using (SqlCommand command = new SqlCommand(
+                        @"select city,COUNT(city)from AddressBookDetails group by city;
+                        select state, COUNT(state)from AddressBookDetails group by state; ", connection))
+                    {
+                        connection.Open();
+                        using (SqlDataReader sqlDataReader = command.ExecuteReader())
+                        {
+                            while (sqlDataReader.Read())
+                            {
+                                addressBookModel.City = sqlDataReader.GetString(0);
+                                int countCIty = sqlDataReader.GetInt32(1);
+                                Console.WriteLine("{0},{1}", addressBookModel.City, countCIty);
+                                Console.WriteLine("\n");
+                            }
+                            if (sqlDataReader.NextResult())
+                            {
+                                while (sqlDataReader.Read())
+                                {
+                                    addressBookModel.State = sqlDataReader.GetString(0);
+                                    int stateCount = sqlDataReader.GetInt32(1);
+                                    Console.WriteLine("{0},{1}", addressBookModel.State, stateCount);
+                                    Console.WriteLine("\n");
+                                }
+                            }
+                        }
+                    }
                 }
             }
             catch (Exception e)
