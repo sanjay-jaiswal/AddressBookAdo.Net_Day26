@@ -34,6 +34,7 @@ namespace AddressBook_ADODotNet
             addressBookRepo.AddContactsInAddressBook(addressBookModel);
             addressBookRepo.UpdateContactByName(addressBookModel, "Sachin");
             addressBookRepo.deleteContactsFromDatabaseUsingFirstName("Tushar");
+            addressBookRepo.RetriveRecordsByCityOrState();
         }
     }
 }
