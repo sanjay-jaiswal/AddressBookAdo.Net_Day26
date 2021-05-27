@@ -422,5 +422,64 @@ namespace AddressBook_ADODotNet
                 connection.Close();
             }
         }
+
+        public bool AddPersonAsFriendAndFamily(AddressBookModel addressBookModel)
+        {
+            SqlConnection connection = new SqlConnection(connectionString);
+            try
+            {
+                using (connection)
+                {
+                    SqlCommand cmd = new SqlCommand("spCRUDoperations",connection);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@FirstName", addressBookModel.FirstName);
+                    cmd.Parameters.AddWithValue("@LastName", addressBookModel.LastName);
+                    cmd.Parameters.AddWithValue("@Address", addressBookModel.Address);
+                    cmd.Parameters.AddWithValue("@City", addressBookModel.City);
+                    cmd.Parameters.AddWithValue("@State", addressBookModel.State);
+                    cmd.Parameters.AddWithValue("@Zip", addressBookModel.Zip);
+                    cmd.Parameters.AddWithValue("@PhoneNumber", addressBookModel.PhoneNumber);
+                    cmd.Parameters.AddWithValue("@Email", addressBookModel.Email);
+                    cmd.Parameters.AddWithValue("@AddressBookName", addressBookModel.AddressBookName);
+                    cmd.Parameters.AddWithValue("@AddressBookType", addressBookModel.AddressBookType);
+                    connection.Open();
+                    var result = cmd.ExecuteNonQuery();
+                    connection.Close();
+                    if (result != 0)
+                    {
+                        return true;
+                    }
+
+                    SqlCommand cmd1 = new SqlCommand("spCRUDoperations",connection);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@FirstName", addressBookModel.FirstName);
+                    cmd.Parameters.AddWithValue("@LastName", addressBookModel.LastName);
+                    cmd.Parameters.AddWithValue("@Address", addressBookModel.Address);
+                    cmd.Parameters.AddWithValue("@City", addressBookModel.City);
+                    cmd.Parameters.AddWithValue("@State", addressBookModel.State);
+                    cmd.Parameters.AddWithValue("@Zip", addressBookModel.Zip);
+                    cmd.Parameters.AddWithValue("@PhoneNumber", addressBookModel.PhoneNumber);
+                    cmd.Parameters.AddWithValue("@Email", addressBookModel.Email);
+                    cmd.Parameters.AddWithValue("@AddressBookName", addressBookModel.AddressBookName);
+                    cmd.Parameters.AddWithValue("@AddressBookType", addressBookModel.AddressBookType);
+                    connection.Open();
+                    var result1 = cmd.ExecuteNonQuery();
+                    connection.Close();
+                    if (result != 0)
+                    {
+                        return true;
+                    }
+                    return false;
+                }
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
     }
 }

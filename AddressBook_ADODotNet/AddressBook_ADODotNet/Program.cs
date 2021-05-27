@@ -40,6 +40,30 @@ namespace AddressBook_ADODotNet
             addressBookRepo.FindAddressBookWithNameAndType("Sachin","Friends","Friends Book");
             addressBookRepo.CountPersonByType();
 
+            AddressBookModel addressBookModel2 = new AddressBookModel();
+            addressBookModel2.FirstName = "Rahul";
+            addressBookModel2.LastName = "Tripathi";
+            addressBookModel2.Address = "Jabalpur";
+            addressBookModel2.City = "Bhopal";
+            addressBookModel2.State = "Madhya Pradesh";
+            addressBookModel2.Zip = "423344";
+            addressBookModel2.PhoneNumber = "8887131570";
+            addressBookModel2.Email = "rahul11@gmail.com";
+            addressBookModel2.AddressBookName = "Friends book";
+            addressBookModel2.AddressBookType = "Friend";
+
+            addressBookModel2.FirstName = "Rahul";
+            addressBookModel2.LastName = "Tripathi";
+            addressBookModel2.Address = "Jabalpur";
+            addressBookModel2.City = "Bhopal";
+            addressBookModel2.State = "Madhya Pradesh";
+            addressBookModel2.Zip = "423344";
+            addressBookModel2.PhoneNumber = "8887131570";
+            addressBookModel2.Email = "rahul11@gmail.com";
+            addressBookModel2.AddressBookName = "Family book";
+            addressBookModel2.AddressBookType = "Family";
+            addressBookRepo.AddPersonAsFriendAndFamily(addressBookModel2);
+
         }
     }
 }
