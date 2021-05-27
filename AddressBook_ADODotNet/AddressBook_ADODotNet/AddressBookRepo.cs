@@ -262,8 +262,8 @@ namespace AddressBook_ADODotNet
                 using (connection)
                 {
                     using (SqlCommand command = new SqlCommand(
-                        @"select city,COUNT(city)from AddressBookDetails group by city;
-                        select state, COUNT(state)from AddressBookDetails group by state; ", connection))
+                        @"select City,COUNT(City)from AddressBookDetails group by City;
+                        select State, COUNT(State)from AddressBookDetails group by State; ", connection))
                     {
                         connection.Open();
                         using (SqlDataReader sqlDataReader = command.ExecuteReader())
@@ -287,6 +287,54 @@ namespace AddressBook_ADODotNet
                             }
                         }
                     }
+                }
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
+        public void SortedRecordsAlphabeticallyByFirstName()
+        {
+            SqlConnection connection = new SqlConnection(connectionString);
+            try
+            {
+                AddressBookModel addressBookModel = new AddressBookModel();
+                using (connection)
+                {
+                    string query = @"select * from AddressBookDetails where City='Margao' order by FirstName;";
+                    SqlCommand cmd = new SqlCommand(query, connection);
+                    connection.Open();
+                    SqlDataReader sqlDataReader = cmd.ExecuteReader();
+                    if (sqlDataReader.HasRows)
+                    {
+                        while (sqlDataReader.Read())
+                        {
+                            addressBookModel.FirstName = sqlDataReader.GetString(0); ;
+                            addressBookModel.LastName = sqlDataReader.GetString(1);
+                            addressBookModel.Address = sqlDataReader.GetString(2);
+                            addressBookModel.City = sqlDataReader.GetString(3);
+                            addressBookModel.State = sqlDataReader.GetString(4);
+                            addressBookModel.Zip = sqlDataReader.GetString(5);
+                            addressBookModel.PhoneNumber = sqlDataReader.GetString(6);
+                            addressBookModel.Email = sqlDataReader.GetString(7);
+                            addressBookModel.AddressBookName = sqlDataReader.GetString(8);
+                            addressBookModel.AddressBookType = sqlDataReader.GetString(9);
+                            Console.WriteLine("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9}", addressBookModel.FirstName, addressBookModel.LastName, addressBookModel.Address, addressBookModel.City, addressBookModel.State, addressBookModel.Zip, addressBookModel.PhoneNumber, addressBookModel.Email, addressBookModel.AddressBookName, addressBookModel.AddressBookType);
+                            Console.WriteLine("\n");
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("No Data Found");
+                    }
+                    sqlDataReader.Close();
+                    connection.Close();
                 }
             }
             catch (Exception e)
