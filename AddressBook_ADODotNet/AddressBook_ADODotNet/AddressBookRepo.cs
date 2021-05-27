@@ -346,5 +346,37 @@ namespace AddressBook_ADODotNet
                 connection.Close();
             }
         }
+
+        public bool FindAddressBookWithNameAndType(string firstName, string addressType, string addressName)
+        {
+            SqlConnection connection = new SqlConnection(connectionString);
+            try
+            {
+                using (connection)
+                {
+                    string query = @"update AddressBookDetails set AddressBookName=@AddressBookName , AddressBookType=@AddressBookType where FirstName=@FirstName;";
+                    SqlCommand cmd = new SqlCommand(query, connection);
+                    cmd.Parameters.AddWithValue("@FirstName", firstName);
+                    cmd.Parameters.AddWithValue("@AddressBookType", addressType);
+                    cmd.Parameters.AddWithValue("@AddressBookName", addressName);
+                    connection.Open();
+                    var result = cmd.ExecuteNonQuery();
+                    connection.Close();
+                    if (result != 0)
+                    {
+                        return true;
+                    }
+                    return false;
+                }
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
     }
 }

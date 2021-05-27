@@ -37,6 +37,7 @@ namespace AddressBook_ADODotNet
             addressBookRepo.RetriveRecordsByCityOrState();
             addressBookRepo.CountByCityAndState();
             addressBookRepo.SortedRecordsAlphabeticallyByFirstName();
+            addressBookRepo.FindAddressBookWithNameAndType("Sachin","Friends","Friends Book");
         }
     }
 }
