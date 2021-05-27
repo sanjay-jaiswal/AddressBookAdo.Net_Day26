@@ -9,14 +9,8 @@ namespace AddressBook_ADODotNet
         {
             Console.WriteLine("================= Welcome To Address Book Using ADO Dot Net =======================");
 
-            List<AddressBookModel> contactList = new List<AddressBookModel>();
-
             AddressBookRepo addressBookRepo = new AddressBookRepo();
             AddressBookModel addressBookModel = new AddressBookModel();
-            //addressBookRepo.AddContactsInAddressBook(addressBookModel);
-
-            addressBookRepo.UpdateExiContactToDataBase(addressBookModel,"Sanju");
-
 
             addressBookModel.FirstName = "Sanju";
             addressBookModel.LastName = "Jaiswal";
@@ -28,42 +22,18 @@ namespace AddressBook_ADODotNet
             addressBookModel.Email = "sanju@gmail.com";
             addressBookModel.AddressBookName = "Friend address book";
             addressBookModel.AddressBookType = "Friends";
-            // addressBookRepo.checkConnection();
+
+            //addressBookRepo.checkConnection();
             //addressBookRepo.AddContactInAddressBook(addressBookModel);
-
-
+            addressBookRepo.UpdateContactByName(addressBookModel, "Sanju");
             addressBookRepo.RetrieveFromDatabase();
 
             // addressBookRepo.EditContactUsingName(addressBookModel, "Sanju");
             // addressBookRepo.DeleteContactUsingFirstName("Sanju");
 
-
-
-            AddressBookModel contact = new AddressBookModel();
-            Console.WriteLine("Enter First Name");
-            contact.FirstName = Console.ReadLine();
-            Console.WriteLine("Enter Last Name");
-            contact.LastName = Console.ReadLine();
-            Console.WriteLine("Enter Address");
-            contact.Address = Console.ReadLine();
-            Console.WriteLine("Enter City");
-            contact.City = Console.ReadLine();
-            Console.WriteLine("Enter State");
-            contact.State = Console.ReadLine();
-            Console.WriteLine("Enter ZipCode");
-            contact.Zip = Console.ReadLine();
-            
-            Console.WriteLine("Enter Phone number");
-            contact.PhoneNumber = Console.ReadLine();
-            Console.WriteLine("Enter Email");
-            contact.Email = Console.ReadLine();
-            Console.WriteLine("Enter Address book name");
-            contact.AddressBookName = Console.ReadLine();
-            Console.WriteLine("Enter Address book type");
-            contact.AddressBookType = Console.ReadLine();
-
-            contactList.Add(contact);
-
+            addressBookRepo.AddContactsInAddressBook(addressBookModel);
+            addressBookRepo.UpdateContactByName(addressBookModel, "Sachin");
+            addressBookRepo.deleteContactsFromDatabaseUsingFirstName("Tushar");
         }
     }
 }

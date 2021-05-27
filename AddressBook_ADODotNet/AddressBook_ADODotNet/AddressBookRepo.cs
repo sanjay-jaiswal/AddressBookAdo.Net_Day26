@@ -134,7 +134,7 @@ namespace AddressBook_ADODotNet
             }
         }
 
-        public bool UpdateExiContactToDataBase(AddressBookModel addressBookModel, string firstName)
+        public bool UpdateContactByName(AddressBookModel addressBookModel, string firstName)
         {
             SqlConnection connection = new SqlConnection(connectionString);
             try
@@ -155,6 +155,36 @@ namespace AddressBook_ADODotNet
                     cmd.Parameters.AddWithValue("@Email", addressBookModel.Email);
                     cmd.Parameters.AddWithValue("@AddressBookName", addressBookModel.AddressBookName);
                     cmd.Parameters.AddWithValue("@AddressBookType", addressBookModel.AddressBookType);
+                    connection.Open();
+                    var result = cmd.ExecuteNonQuery();
+                    connection.Close();
+                    if (result != 0)
+                    {
+                        return true;
+                    }
+                    return false;
+                }
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
+        public bool deleteContactsFromDatabaseUsingFirstName(string FirstName)
+        {
+            SqlConnection connection = new SqlConnection(connectionString);
+            try
+            {
+                using (connection)
+                {
+                    SqlCommand cmd = new SqlCommand("spCRUDoperations", connection);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@FirstName", FirstName);
                     connection.Open();
                     var result = cmd.ExecuteNonQuery();
                     connection.Close();
