@@ -38,6 +38,8 @@ namespace AddressBook_ADODotNet
             addressBookRepo.CountByCityAndState();
             addressBookRepo.SortedRecordsAlphabeticallyByFirstName();
             addressBookRepo.FindAddressBookWithNameAndType("Sachin","Friends","Friends Book");
+            addressBookRepo.CountPersonByType();
+
         }
     }
 }

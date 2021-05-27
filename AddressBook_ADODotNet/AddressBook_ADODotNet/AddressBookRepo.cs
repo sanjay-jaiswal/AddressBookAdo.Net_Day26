@@ -378,5 +378,49 @@ namespace AddressBook_ADODotNet
                 connection.Close();
             }
         }
+
+        public void CountPersonByType()
+        {
+            SqlConnection connection = new SqlConnection(connectionString);
+            try
+            {
+                AddressBookModel addressBookModel = new AddressBookModel();
+                using (connection)
+                {
+                    using (SqlCommand command = new SqlCommand(
+                        @"select count(AddressBookDetails) as 'number_of_contacts' from AddressBookDetails where AddressBookType='Friends';
+                        select count(AddressBookDetails) as 'number_of_contacts' from AddressBookDetails where AddressBookType='Family';", connection))
+                    {
+                        connection.Open();
+                        using (SqlDataReader sqlDataReader = command.ExecuteReader())
+                        {
+                            while (sqlDataReader.Read())
+                            {
+                                var count = sqlDataReader.GetInt32(0);
+                                Console.WriteLine("Total number of person belonging to address book type friend are :  {0}", count);
+                                Console.WriteLine("\n");
+                            }
+                            if (sqlDataReader.NextResult())
+                            {
+                                while (sqlDataReader.Read())
+                                {
+                                    var count = sqlDataReader.GetInt32(0);
+                                    Console.WriteLine("Total number of person belonging to adress book type family are :  {0}", count);
+                                    Console.WriteLine("\n");
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
     }
 }
